@@ -3,14 +3,16 @@ package entities;
 import entitiesEnum.OrderStatus;
 import entities.OrderItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Order {
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     private Date moment;
     private OrderStatus status;
-    private Product product;
     private Client client;
     private List<OrderItem> items = new ArrayList<>();
 
@@ -21,10 +23,9 @@ public class Order {
 
     }
 
-    public Order(Date moment, OrderStatus status, Product product, Client client) {
+    public Order(Date moment, OrderStatus status, Client client) {
         this.moment = moment;
         this.status = status;
-        this.product = product;
         this.client = client;
     }
     /////////////////////////////////////////////////////////////
@@ -45,14 +46,6 @@ public class Order {
         this.status = status;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     public Client getClient() {
         return client;
     }
@@ -71,6 +64,32 @@ public class Order {
     }
     public void removeItem(OrderItem item){
         items.remove(item);
+    }
+
+    public double total() {
+        double sum = 0.0;
+        for (OrderItem it : items) {
+            sum += it.subTotal();
+        }
+        return sum;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Momento do pedido: ");
+        sb.append(sdf.format(moment)).append("\n");
+        sb.append("Status do pedido: ");
+        sb.append(status).append("\n");
+        sb.append("Cliente: ");
+        sb.append(client).append("\n");
+        sb.append("Itens do pedido:\n");
+        for (OrderItem item : items) {
+            sb.append(item).append("\n");
+        }
+        sb.append("Valor Total: $");
+        sb.append(String.format("%.2f", total()));
+        return sb.toString();
     }
 
 
